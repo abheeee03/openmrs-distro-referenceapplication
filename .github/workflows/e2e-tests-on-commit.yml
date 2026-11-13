@@ -12,6 +12,19 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  manifest-encoding:
+    name: Precompressed manifest
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Install brotli
+        run: sudo apt-get update && sudo apt-get install -y brotli
+
+      - name: Fetch the manifest with gzip and brotli
+        run: bash ./tests/frontend/check-manifest-encoding.sh
+
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 40
@@ -23,6 +36,12 @@ jobs:
 
       - name: Wait for the backend to start
         run: while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' http://localhost/openmrs/login.htm)" != "200" ]]; do sleep 10; done
+
+      - name: Install brotli
+        run: sudo apt-get update && sudo apt-get install -y brotli
+
+      - name: Manifest encodings have no SPA_PATH placeholder
+        run: CHECK_BASE_URL=http://localhost/openmrs/spa bash ./tests/frontend/check-manifest-encoding.sh
 
       - name: Commit and export Containers
         run: bash ./tests/e2e/commit_and_export_images.sh

@@ -2,6 +2,8 @@
 **/.DS_Store
 **/node_modules/
 .idea/
+# scratch dirs created by tests/frontend/check-manifest-encoding.sh
+.manifest-check.*
 
 # LLM coding agent documentation
 CLAUDE.md

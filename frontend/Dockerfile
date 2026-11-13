@@ -24,8 +24,8 @@ FROM nginx:1.31-alpine
 
 RUN apk update && \
     apk upgrade && \
-    # add more utils for sponge and envsubst
-    apk add --no-cache moreutils
+    # moreutils: sponge. brotli: recreate manifest .br after startup substitution.
+    apk add --no-cache moreutils brotli
 
 # clear any default files installed by nginx
 RUN rm -rf /usr/share/nginx/html/*
